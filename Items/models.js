@@ -51,4 +51,4 @@ ItemSchema.pre('find', function(next) {
 
 const Item = mongoose.model('User', ItemSchema);
 
-module.exports = {User};
+module.exports = {Item};

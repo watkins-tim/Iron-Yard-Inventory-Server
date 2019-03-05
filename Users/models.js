@@ -10,7 +10,9 @@ const UserSchema = mongoose.Schema({
     lastName: {type: String, required: true},
     password: {type: String, required: true},
     username: {type: String, required: true, unique: true},
-    company: {type:String, required: true}
+    companyID: {type:String, required: true},
+    company: {type: mongoose.Schema.Types.ObjectId, ref: 'Company'},
+
 });
 
 UserSchema.methods.serialize = function() {
@@ -18,9 +20,21 @@ UserSchema.methods.serialize = function() {
         firstName: this.firstName,
         lastName: this.lastName,
         username: this.username,
+        companyID: this.companyID,
         company: this.company
     }
 };
+
+UserSchema.pre('find', function(next){
+    this.populate('company');
+    next();
+});
+
+UserSchema.pre('findOne', function(next){
+    this.populate('company');
+    next();
+});
+
 UserSchema.methods.validatePassword = function(password) {
     return bcrypt.compare(password, this.password);
   };
