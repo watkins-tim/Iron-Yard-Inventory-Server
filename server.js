@@ -5,18 +5,34 @@ const morgan = require('morgan');
 const passport = require('passport');
 const mongoose = require('mongoose');
 
+const { PORT, DATABASE_URL, LOCAL_TEST_DATABASE_URL } = require('./config');
 
-//import config variables
-const { PORT, DATABASE_URL, TEST_DATABASE_URL } = require('./config');
+const { router: userRouter } = require('./users/');
+const { router: itemRouter } = require('./items/');
+const { router: authRouter, localStrategy, jwtStrategy } = require('./auth/index');
+
+const {Company} = require('./company/model');
 
 
 
+passport.use(localStrategy);
+passport.use(jwtStrategy);
 //use promises
 mongoose.Promise = global.Promise;
 
-//use authentication
-passport.use(localStrategy);
-passport.use(jwtStrategy);
+//load testCompany
+
+            /*const testCompany = {
+                name:'Mountain Steel',
+                companyID:'MtnSteel',
+                location:'Asheville, NC'
+            }
+
+            Company.create(testCompany)
+            .then(company=>{
+                console.log(company);
+            });
+*/
 
 //logging
 app.use(morgan('common'));
@@ -34,10 +50,16 @@ app.use(function (req, res, next) {
 
 
 //sends a not found response for all non-existant endpoints
-  app.use('*', (req, res) => {
-    return res.status(404).json({ message: 'Not Found' });
-  });
 
+
+//Direct all requests to routers
+app.use('/api/auth/', authRouter);
+app.use('/api/user/', userRouter);
+app.use('/api/item/', itemRouter);
+
+app.use('*', (req, res) => {
+    return res.status(200).json({ message: 'Not Found' });
+  });
 
   let server
   // this function connects to our database, then starts the server
@@ -79,7 +101,7 @@ app.use(function (req, res, next) {
   // if server.js is called directly (aka, with `node server.js`), this block
   // runs. but we also export the runServer command so other code (for instance, test code) can start the server as needed.
   if (require.main === module) {
-    runServer(TEST_DATABASE_URL).catch(err => console.error(err));
+    runServer(LOCAL_TEST_DATABASE_URL).catch(err => console.error(err));
   };
   
   module.exports = { app, runServer, closeServer };

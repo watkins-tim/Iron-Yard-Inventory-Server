@@ -8,6 +8,8 @@ const router = express.Router();
 const jsonParser = bodyParser.json();
 
 const {User} = require('./model');
+const {Company} = require('../company');
+
 const { localStrategy, jwtStrategy } = require('../auth/strategies');
 
 passport.use(localStrategy);
@@ -16,6 +18,7 @@ passport.use(jwtStrategy);
 const jwtAuth = passport.authenticate('jwt', { session: false });
 
 router.post('/', jsonParser, (req, res) => {
+    console.log('here');
     const requiredFields = ['firstName', 'lastName', 'username', 'password', 'companyID'];
     const missingField = requiredFields.find(field => !(field in req.body));
     //console.log(req.body);
@@ -28,7 +31,7 @@ router.post('/', jsonParser, (req, res) => {
       });
     }
     
-    const stringFields = ['username', 'password', 'firstName', 'lastName'];
+    const stringFields = ['username', 'password', 'firstName', 'lastName', 'companyID'];
     const nonStringField = stringFields.find(
       field => field in req.body && typeof req.body[field] !== 'string'
     );
@@ -41,14 +44,32 @@ router.post('/', jsonParser, (req, res) => {
         location: nonStringField
       });
     }
-    let {username, password, firstName = '', lastName = ''} = req.body;
+    let {username, password, firstName = '', lastName = '', companyID} = req.body;
     // Username and password come in pre-trimmed, otherwise we throw an error
     // before this
     const activities = {};
     firstName = firstName.trim();
     lastName = lastName.trim();
+    username = username.trim();
     //console.log(req.body);
-    return User.find({username})
+
+    /*
+    return Company.find({companyID})
+    .then(company =>{
+      console.log(company);
+      if (!company){
+        return Promise.reject({
+          code:422,
+          reason: 'ValidationError',
+          message: 'Company ID does not exist',
+          location: 'companyID'
+        })
+      }
+
+      return User.find({username})
+    })
+    */
+   return User.find({username})
       .countDocuments()
       .then(count => {
         if (count > 0) {
@@ -56,11 +77,23 @@ router.post('/', jsonParser, (req, res) => {
           return Promise.reject({
             code: 422,
             reason: 'ValidationError',
-            message: 'Email already taken',
+            message: 'username already taken',
             location: 'username'
           });
         }
-        return User.hashPassword(password);
+        return Company.findOne({companyID})
+      })
+      .then(company=>{
+        console.log(company);
+        if (!company){
+          return Promise.reject({
+            code:422,
+            reason: 'ValidationError',
+            message: 'Company ID does not exist',
+            location: 'companyID'
+          });
+        }
+          return User.hashPassword(password);
       })
       .then(hash => {
         return User.create({
@@ -68,6 +101,7 @@ router.post('/', jsonParser, (req, res) => {
           password: hash,
           firstName,
           lastName,
+          companyID
         });
       })
       .then(user => {

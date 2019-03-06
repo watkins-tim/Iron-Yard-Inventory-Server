@@ -11,7 +11,7 @@ const UserSchema = mongoose.Schema({
     password: {type: String, required: true},
     username: {type: String, required: true, unique: true},
     companyID: {type:String, required: true},
-    company: {type: mongoose.Schema.Types.ObjectId, ref: 'Company'},
+    //company: {type: mongoose.Schema.Types.ObjectId, ref: 'Company'},
 
 });
 

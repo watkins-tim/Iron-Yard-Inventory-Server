@@ -8,8 +8,8 @@ const router = express.Router();
 const jsonParser = bodyParser.json();
 
 const {Item} = require('./model');
-const {User} = require('../user/model');
-const {Company} = require('../Company.model');
+const {User} = require('../users/model');
+const {Company} = require('../company/');
 const { localStrategy, jwtStrategy } = require('../auth/strategies');
 
 

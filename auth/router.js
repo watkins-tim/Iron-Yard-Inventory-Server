@@ -20,7 +20,6 @@ router.use(bodyParser.json());
 
 // The user provides a email and password to login
 router.post('/login', localAuth, (req, res) => {
-  //console.log(req.body);
   if(req.body == undefined){
     res.status(400);
   }

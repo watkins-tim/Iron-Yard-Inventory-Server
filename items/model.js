@@ -24,6 +24,7 @@ const ItemSchema = mongoose.Schema({
 
 ItemSchema.pre('find', function(next) {
     this.populate('author');
+    this.populate('company');
     next();
   });
 
@@ -49,6 +50,6 @@ ItemSchema.pre('find', function(next) {
     next();
   });
 
-const Item = mongoose.model('User', ItemSchema);
+const Item = mongoose.model('Item', ItemSchema);
 
 module.exports = {Item};
