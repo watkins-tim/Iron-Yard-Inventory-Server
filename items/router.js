@@ -123,5 +123,26 @@ router.delete('/:id',jwtAuth,(req,res)=>{
       });
   });
 
+/*****************EDIT ONE ITEM FROM A COMPANY*************/
+
+router.put("/:id", jwtAuth, jsonParser, (req, res)=>{
+    const body = req.body;
+    body.lastEdit = req.user.id;
+    
+    console.log(body);
+    return User.findOne({username:req.user.username})
+        .then (user=>{
+            return Item.findOneAndUpdate({_id:req.params.id}, body, { new:true})
+        })
+        .then(item=>{
+            res.status(200).json(item)
+        })
+        .catch(err=>{
+            //console.log(err);
+            return res.status(500).json({code: 500, message: 'Internal server error'});
+          });
+})
+
+
 
 module.exports = {router};
