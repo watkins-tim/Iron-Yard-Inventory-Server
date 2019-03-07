@@ -7,29 +7,32 @@ const mongoose = require('mongoose');
 const ItemSchema = mongoose.Schema({
     location: {type: String, required: true},
     area: {type: String, required: true},
-    quantity: {type: String, required: true},
+    quantity: {type: Number, required: true},
     shape: {type: String, required: true},
     size: {type:String, required: true},
-    feet: {type:String, required: true},
-    inches: {type:String, required: true},
-    fraction: {type:String, required: true},
+    feet: {type: Number, required: true},
+    inches: {type:Number, required: true},
+    fraction: {type:Number, required: true},
     grade: {type:String, required: true},
     reserve: {type:String, required: true},
+    po: {type:String, required: true},
     remarks: {type:String, required: true},
-    company: {type:String, required: true},
-    author: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
-    company: {type: mongoose.Schema.Types.ObjectId, ref: 'Company'},
+    companyID:{type: String, required: true},
+    created:{type: Date, default: Date.now},
+    user: {type: mongoose.Schema.Types.ObjectId, ref: 'User'},
+    //company: {type: mongoose.Schema.Types.ObjectId, ref: 'Company'},
     lastEdit: {type: mongoose.Schema.Types.ObjectId, ref: 'User'}
 });
 
 ItemSchema.pre('find', function(next) {
-    this.populate('author');
-    this.populate('company');
+    this.populate('user');
+    this.populate('lastEdit');
     next();
   });
 
 ItemSchema.methods.serialize = function() {
     return {
+        id:this.id,
         location: this.location,
         area: this.area,
         quantity: this.quantity,
@@ -40,15 +43,15 @@ ItemSchema.methods.serialize = function() {
         fraction: this.fraction,
         grade: this.grade,
         reserve: this.reserve,
+        po:this.po,
+        created:this.created,
         remarks: this.remarks,
         reserve: this.reserve,
-        author: this.author
+        user: this.user,
+        lastEdit:this.lastEdit
     }
 };
-ItemSchema.pre('find', function(next) {
-    this.populate('author');
-    next();
-  });
+
 
 const Item = mongoose.model('Item', ItemSchema);
 
