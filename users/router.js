@@ -18,7 +18,6 @@ passport.use(jwtStrategy);
 const jwtAuth = passport.authenticate('jwt', { session: false });
 
 router.post('/', jsonParser, (req, res) => {
-    console.log('here');
     const requiredFields = ['firstName', 'lastName', 'username', 'password', 'companyID'];
     const missingField = requiredFields.find(field => !(field in req.body));
     //console.log(req.body);
@@ -44,31 +43,14 @@ router.post('/', jsonParser, (req, res) => {
         location: nonStringField
       });
     }
-    let {username, password, firstName = '', lastName = '', companyID} = req.body;
+    let {username, password, firstName, lastName, companyID} = req.body;
     // Username and password come in pre-trimmed, otherwise we throw an error
     // before this
     const activities = {};
     firstName = firstName.trim();
     lastName = lastName.trim();
     username = username.trim();
-    //console.log(req.body);
 
-    /*
-    return Company.find({companyID})
-    .then(company =>{
-      console.log(company);
-      if (!company){
-        return Promise.reject({
-          code:422,
-          reason: 'ValidationError',
-          message: 'Company ID does not exist',
-          location: 'companyID'
-        })
-      }
-
-      return User.find({username})
-    })
-    */
    return User.find({username})
       .countDocuments()
       .then(count => {
@@ -84,7 +66,7 @@ router.post('/', jsonParser, (req, res) => {
         return Company.findOne({companyID})
       })
       .then(company=>{
-        console.log(company);
+        //console.log(company);
         if (!company){
           return Promise.reject({
             code:422,
@@ -115,10 +97,32 @@ router.post('/', jsonParser, (req, res) => {
           return res.status(err.code).json(err);
         }
         //debugging
-        console.log(err);
+        //console.log(err);
         res.status(500).json({code: 500, message: 'Internal server error'});
       });
     });
 
+router.get('/', jwtAuth, jsonParser, (req, res)=>{
+    return User.findOne({"username": req.user.username})
+    .then(user=>{
+      return res.status(200).json(user.serialize());
+    })
+    .catch(err=>{
+      //console.log(err);
+      return res.status(500).json({code: 500, message: 'Internal server error'});
+    })
+});
+
+router.delete('/',jwtAuth,(req,res)=>{
+  //console.log('username'+ req.user.username)
+  return User.deleteOne({username:req.user.username})
+    .then(next=>{
+      res.status(200).json(next);
+    })
+    .catch(err=>{
+      //console.log(err);
+      return res.status(500).json({code: 500, message: 'Internal server error'});
+    });
+});
 
 module.exports = {router};

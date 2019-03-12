@@ -7,7 +7,7 @@ const passport = require('passport');
 const router = express.Router();
 const jsonParser = bodyParser.json();
 
-const {Item} = require('./model');
+const {Item, builder} = require('./model');
 const {User} = require('../users/model');
 const {Company} = require('../company/');
 const { localStrategy, jwtStrategy } = require('../auth/strategies');
@@ -141,6 +141,33 @@ router.put("/:id", jwtAuth, jsonParser, (req, res)=>{
             //console.log(err);
             return res.status(500).json({code: 500, message: 'Internal server error'});
           });
+})
+/**************return CSV**************** */
+
+router.get('/csv', jwtAuth, jsonParser,(req,res)=>{
+  return Item.find({companyID:req.user.companyID})
+  .then(data=>{
+    let csv='';
+      csv += builder.getHeaders()
+      data.forEach(item => {
+        csv += builder.getRow(item)
+      });
+  res.send(csv).status(200)
+    })
+  .catch(err=>{
+    console.log(err)
+    res.status(500).message('internal server error')
+  });
+})
+router.get('/json', jwtAuth, jsonParser,(req,res)=>{
+  return Item.find({companyID:req.user.companyID})
+  .then(data=>{
+    res.send(data).status(200)
+    })
+  .catch(err=>{
+    console.log(err)
+    res.status(500).message('internal server error')
+  });
 })
 
 

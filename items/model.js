@@ -2,6 +2,7 @@
 
 //require packages
 const mongoose = require('mongoose');
+const CsvBuilder = require('csv-builder');
 
 
 const ItemSchema = mongoose.Schema({
@@ -42,17 +43,21 @@ ItemSchema.methods.serialize = function() {
         inches: this.inches,
         fraction: this.fraction,
         grade: this.grade,
-        reserve: this.reserve,
         po:this.po,
         created:this.created,
         remarks: this.remarks,
         reserve: this.reserve,
-        user: this.user,
-        lastEdit:this.lastEdit
+        user: this.user.serialize(),
+        lastEdit:this.lastEdit.serialize()
     }
 };
+
+const builder = new CsvBuilder({
+    headers: ['shape', 'size', 'remarks', 'quantity', 'location', 'area', 'feet', 'inches', 'fraction', 'grade', 'po', 'reserve'],
+  })
+
 
 
 const Item = mongoose.model('Item', ItemSchema);
 
-module.exports = {Item};
+module.exports = {builder, Item};

@@ -22,9 +22,9 @@ mongoose.Promise = global.Promise;
 
 //load testCompany
 
-            /*const testCompany = {
-                name:'Mountain Steel',
-                companyID:'MtnSteel',
+/*            const testCompany = {
+                name:'test company',
+                companyID:'testCompany',
                 location:'Asheville, NC'
             }
 
@@ -58,7 +58,7 @@ app.use('/api/user/', userRouter);
 app.use('/api/item/', itemRouter);
 
 app.use('*', (req, res) => {
-    return res.status(200).json({ message: 'Not Found' });
+    return res.status(404).json({ message: 'Not Found' });
   });
 
   let server
@@ -66,7 +66,7 @@ app.use('*', (req, res) => {
   function runServer(databaseUrl, port = PORT) {
     return new Promise((resolve, reject) => {
       //mongoose.set('debug', true);
-      mongoose.connect(databaseUrl, err => {
+      mongoose.connect(databaseUrl, { useNewUrlParser: true }, err => {
         if (err) {
           return reject(err);
         }
