@@ -75,7 +75,7 @@ router.post('/', jwtAuth,jsonParser, (req, res) => {
             return res.status(err.code).json(err);
     }
     //debugging
-    console.log(err);
+    //console.log(err);
         res.status(500).json({code: 500, message: 'Internal server error'});
     });
 });
@@ -94,9 +94,8 @@ router.get('/', jwtAuth, jsonParser, (req, res)=>{
         message: 'Missing Paramter',
       });
     }
-  
 
-      return Item.find({companyID}).limit(20).sort({created: -1}).skip(20 * page)
+      return Item.find({companyID:companyID}).limit(20).sort({created: -1}).skip(20 * page)
       .then(items=>{
           const resArr = [];
           items.map(singleItem =>{
@@ -105,7 +104,7 @@ router.get('/', jwtAuth, jsonParser, (req, res)=>{
         return res.status(200).json(resArr);
       })
       .catch(err=>{
-        //console.log(err);
+        console.log(err);
         return res.status(500).json({code: 500, message: 'Internal server error'});
       })
     });
@@ -127,11 +126,9 @@ router.delete('/:id',jwtAuth,(req,res)=>{
 
 router.put("/:id", jwtAuth, jsonParser, (req, res)=>{
     const body = req.body;
-    body.lastEdit = req.user.id;
-    
-    console.log(body);
     return User.findOne({username:req.user.username})
         .then (user=>{
+            body.lastEdit = user.id;
             return Item.findOneAndUpdate({_id:req.params.id}, body, { new:true})
         })
         .then(item=>{
@@ -159,6 +156,8 @@ router.get('/csv', jwtAuth, jsonParser,(req,res)=>{
     res.status(500).message('internal server error')
   });
 })
+
+
 router.get('/json', jwtAuth, jsonParser,(req,res)=>{
   return Item.find({companyID:req.user.companyID})
   .then(data=>{
