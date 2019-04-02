@@ -66,7 +66,15 @@ router.post('/', jwtAuth,jsonParser, (req, res) => {
             })
     })
     .then(item => {
-        return res.status(201).json(item);
+      //console.log(item)
+      return item.populate('user').execPopulate()
+    })
+    .then(item=>{
+      
+      return item.populate('lastEdit').execPopulate()
+    })
+    .then(item=>{
+      res.json(item).status(200);
     })
     .catch(err => {
     // Forward validation errors on to the client, otherwise give a 500
@@ -75,7 +83,7 @@ router.post('/', jwtAuth,jsonParser, (req, res) => {
             return res.status(err.code).json(err);
     }
     //debugging
-    //console.log(err);
+    console.log(err);
         res.status(500).json({code: 500, message: 'Internal server error'});
     });
 });
