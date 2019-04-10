@@ -74,6 +74,7 @@ router.post('/', jwtAuth,jsonParser, (req, res) => {
       return item.populate('lastEdit').execPopulate()
     })
     .then(item=>{
+
       res.json(item).status(200);
     })
     .catch(err => {
@@ -91,7 +92,7 @@ router.post('/', jwtAuth,jsonParser, (req, res) => {
 /*****************GET ALL ITEMS FOR A COMPANY*************/
 
 router.get('/', jwtAuth, jsonParser, (req, res)=>{
-
+  let itemArr;
     const page = req.query.page;
     const companyID = req.user.companyID;
   
@@ -105,9 +106,16 @@ router.get('/', jwtAuth, jsonParser, (req, res)=>{
 
       return Item.find({companyID:companyID}).limit(20).sort({created: -1}).skip(20 * page)
       .then(items=>{
+        itemArr = items;
+        return Item.countDocuments();
+      })
+      .then(count=>{
+          let item;
           const resArr = [];
-          items.map(singleItem =>{
-            resArr.push(singleItem.serialize());
+          itemArr.map(singleItem =>{
+            item = singleItem.serialize();
+            item.count = count;
+            resArr.push(item);
           })
         return res.status(200).json(resArr);
       })
@@ -122,6 +130,7 @@ router.get('/', jwtAuth, jsonParser, (req, res)=>{
 router.delete('/:id',jwtAuth,(req,res)=>{
     return Item.findOneAndDelete({_id:req.params.id})
       .then(item=>{
+        console.log(item);
         res.status(200).json({message: 'deleted'});
       })
       .catch(err=>{
@@ -167,6 +176,7 @@ router.get('/csv', jwtAuth, jsonParser,(req,res)=>{
 
 
 router.get('/json', jwtAuth, jsonParser,(req,res)=>{
+  console.log('here');
   return Item.find({companyID:req.user.companyID})
   .then(data=>{
     res.send(data).status(200)

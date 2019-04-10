@@ -35,7 +35,7 @@ ItemSchema.pre('find', function(next) {
 
 ItemSchema.methods.serialize = function() {
     return {
-        id:this.id,
+        _id:this.id,
         location: this.location,
         area: this.area,
         quantity: this.quantity,
@@ -50,7 +50,7 @@ ItemSchema.methods.serialize = function() {
         remarks: this.remarks,
         reserve: this.reserve,
         user: this.user.serialize(),
-        lastEdit:this.lastEdit.serialize()
+        lastEdit:this.lastEdit.serialize(),
     }
 };
 
