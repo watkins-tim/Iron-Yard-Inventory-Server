@@ -5,7 +5,7 @@ const morgan = require('morgan');
 const passport = require('passport');
 const mongoose = require('mongoose');
 
-const { PORT, DATABASE_URL, LOCAL_TEST_DATABASE_URL } = require('./config');
+const { PORT, DATABASE_URL, LOCAL_TEST_DATABASE_URL, TEST_DATABASE_URL } = require('./config');
 
 const { router: userRouter } = require('./users/');
 const { router: itemRouter } = require('./items/');
@@ -22,17 +22,18 @@ mongoose.Promise = global.Promise;
 
 //load testCompany
 
-/*            const testCompany = {
+            const testCompaggny = {
                 name:'test company',
                 companyID:'testCompany',
                 location:'Asheville, NC'
             }
 
-            Company.create(testCompany)
+           /* Company.create(testCompany)
             .then(company=>{
                 console.log(company);
-            });
-*/
+            })
+            .catch(err=>console.log(err));  */
+
 
 //logging
 app.use(morgan('common'));
@@ -67,6 +68,7 @@ app.use('*', (req, res) => {
     return new Promise((resolve, reject) => {
       //mongoose.set('debug', true);
       mongoose.connect(databaseUrl, { useNewUrlParser: true }, err => {
+        console.log('Starting server')
         if (err) {
           return reject(err);
         }
@@ -101,7 +103,7 @@ app.use('*', (req, res) => {
   // if server.js is called directly (aka, with `node server.js`), this block
   // runs. but we also export the runServer command so other code (for instance, test code) can start the server as needed.
   if (require.main === module) {
-    runServer(LOCAL_TEST_DATABASE_URL).catch(err => console.error(err));
+    runServer(TEST_DATABASE_URL).catch(err => console.error(err));
   };
   
   module.exports = { app, runServer, closeServer };

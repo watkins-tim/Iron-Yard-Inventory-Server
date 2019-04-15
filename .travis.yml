@@ -1,2 +1,10 @@
 language: node_js
 node_js: node
+deploy:
+  edge: true
+  provider: heroku
+  api_key:
+    secure: KpdTjjglYlURUTqYTrlixWNSZYtNN2+28jTueLRjwd2eltd51zRNGqScUu1H/xc7n0/9uyhfHUpAMeSobI0iAzmcqayKBpRS9zhgFCvXNp08BXno+D0/MyNtzX7m+VM6EdIyA1NfkCVN06CJxAocHaYLcDro9lI8bNF0sFgP82odb/Ri2ifoXdGRTx9i0wE61frgMUvOAz9BKRKMeuivTsPhODb/yl3q6UgtwAkG1oX3EI4DBGl8pB6aL9o9RrHqxxFxngDHBavhcNjnjSM9iVLuabFo3GIxjxBnBW5cxUaK657v1+P3YOAmjpAwlSHZxYhVQLqqL/M3+AmjIV4hqSpWPEGy6H9T2YFDZJbMallFNBitPRyOBsyh+5RoVzdWMbw2a0EJH3UwwYroqY+ar8ukA6P6Ial3K3peV0kgAZ2WK585FeNCIbe9R4ij/EKV73xavFJyQHD0Aq9/iXs11OV4PGHCXVZXXlbWt62+1AbW/BTkbmmtz5N2L8cgwq8xPMsU/W5PawsqI+d9bHHnFFKo694VqDor4qCrz58kTq1KuQPkp8gaiNOa/GDah7tw8Hnw1WQAfEaNL6+wEAk4b+JArOcHfw2yZftH960/s3L3umwFAwdV4c8LRaPhofZ1UDcDX0KUCLEtxqLGaWTwfdK+N0We1V+51cUpIw1pKUE=
+  app: arcane-wildwood-22326
+  on:
+    repo: watkins-tim/Iron-Yard-Inventory-Server

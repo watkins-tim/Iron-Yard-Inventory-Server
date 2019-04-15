@@ -1,6 +1,6 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
-const {LOCAL_TEST_DATABASE_URL} = require('../config');
+const {TEST_DATABASE_URL} = require('../config');
 
 const {User} = require('../users');
 const {Item} = require('../items/model');
@@ -37,7 +37,7 @@ const keys = Object.keys(testItem);
 
 describe('Items API', function(){
     before(function() {
-        runServer(LOCAL_TEST_DATABASE_URL)
+        runServer(TEST_DATABASE_URL)
         return chai
         .request(app)
         .post('/api/user')

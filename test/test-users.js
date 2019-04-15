@@ -1,6 +1,6 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
-const {LOCAL_TEST_DATABASE_URL} = require('../config');
+const {TEST_DATABASE_URL} = require('../config');
 
 const {User} = require('../users')
 
@@ -20,7 +20,7 @@ const testUser = {
 
 describe('Users API', function() {
     before(function() {
-      return runServer(LOCAL_TEST_DATABASE_URL);
+      return runServer(TEST_DATABASE_URL);
     });
   
   after(function() {
