@@ -24,8 +24,9 @@ describe('Users API', function() {
     });
   
   after(function() {
-      User.deleteOne({username:testUser.username});
-    return closeServer();
+      User.deleteMany({})
+      .then(res=>closeServer());
+    ;
   });
   it('Should create a new user', function () {
     return chai

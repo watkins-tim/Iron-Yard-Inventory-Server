@@ -86,7 +86,7 @@ describe('Items API', function(){
                 .set('Authorization', `bearer ${authToken}`)
                 .then (res=>{
                     //console.log(res.body);
-                    expect(res).to.have.status(201);
+                    expect(res).to.have.status(200);
                     expect(res.body).to.be.an('object');
                     expect(res.body).to.include.keys(keys);
                     return res.body
@@ -120,9 +120,9 @@ describe('Items API', function(){
                     //console.log(res);
                     expect(res).to.have.status(200);
                     expect(res.body).to.be.an('array');
-                    //console.log(res.body.length);
+                    //console.log(res.body);
                     expect(res.body.length).to.equal(1);
-                    id = res.body[0].id;
+                    id = res.body[0]._id;
                     //console.log(id);
                 })
             })
