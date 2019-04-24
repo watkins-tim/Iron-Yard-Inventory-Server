@@ -19,7 +19,6 @@ passport.use(jwtStrategy);
 const jwtAuth = passport.authenticate('jwt', { session: false });
 
 router.post('/', jwtAuth,jsonParser, (req, res) => {
-  console.log("hitting endpoint");
     const requiredFields = ['location', 'area', 'quantity', 'shape', 'size'];
 
     const missingField = requiredFields.find(field => !(field in req.body));
