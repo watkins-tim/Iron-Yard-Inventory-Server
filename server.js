@@ -22,13 +22,13 @@ mongoose.Promise = global.Promise;
 
 //load testCompany
 
-            const testCompaggny = {
+            const testCompany = {
                 name:'test company',
                 companyID:'testCompany',
                 location:'Asheville, NC'
-            }
+            };
 
-           /* Company.create(testCompany)
+            /*Company.create(testCompany)
             .then(company=>{
                 console.log(company);
             })
